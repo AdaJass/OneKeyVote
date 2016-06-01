@@ -1,0 +1,172 @@
+<!doctype html>
+<html ng-app="">
+<head>
+    <meta charset="UTF-8">
+    <title>TOPS100中国新锐投资人排行榜</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta content="telephone=no" name="format-detection">
+    <script src="http://apistatic.yijian.tv/js/jquery-1.10.1.min.js"></script>
+    <script src="http://apistatic.yijian.tv/js/angular.min.js"></script>
+    <style type="text/css">
+        body{padding: 0;margin: 0; color: #fff; font-size: 1em; background: #060505 url("http://apistatic.yijian.tv/images/v3_top_bg.jpg") no-repeat; background-size: 100% auto;}
+        p,ul,li {margin: 0;padding: 0; list-style: none;}
+        .top { position: relative;}
+        .top p {width: 100%;text-align:center; line-height: 1.5em;}
+        .poto { float: left; margin:3em 0 2em 4em;}
+        .poto img {width:6em; height: 6em; border-radius: 100%;}
+        .poto2 {float: right; margin: 3em 4em 2em 0;}
+        .poto2 img {width:6em; height: 6em; border-radius: 100%;}
+        .v3_line {width: 100%; position: absolute; top:3em; left: 0; text-align: center;}
+        .v3_line img {width:1em;}
+        .rem {text-align: center; padding: 1.5em 0; color: #EAB37D;}
+        .rem b { width: 60%;display: block; margin: 0 auto; border-top: 1px solid #EAB37D;}
+        .rem p {background: #060505; position:relative;width: 6em; display:block; margin: 0 auto -0.5em auto;}
+
+        .toupiao {  font-size: 1.2em;  width: 4em; height: 4em; background: url("http://apistatic.yijian.tv/images/v2_h5_btn.png") no-repeat; background-size: 100% auto; color: #EAB37D; border: none;}
+        .toupiaos {  font-size: 1.2em; width: 4em; height: 4em; background: url("http://apistatic.yijian.tv/images/v2_h5_btn02.png") no-repeat; background-size: 100% auto; color: #888; border: none;}
+
+        .v3_index_foot {background: url("http://apistatic.yijian.tv/images/v3_pindex.png") no-repeat; width: 90%; background-size: 100% 100%;margin:2em auto 0 auto; padding: 0.8em 0;}
+        .v3_index_foot li{width: 50%; float: left;}
+        .v3_index_foot span { float: left;  margin-top: 1.2em; margin-left: 0.5em}
+        .v3_index_foot button {float: right;margin-right: 0.5em}
+        .link {line-height: 2.5em; text-decoration:none;text-align:center;display: block; border: 1px solid #EAB37D;border-radius: 4px; width: 8em; margin: 1em auto; margin-top: 2em; color: #EAB37D;}
+
+    </style>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+</head>
+<body ng-controller="run">
+<div id="checkJsApi"></div>
+<div id="onMenuShareTimeline"></div>
+<div id="onMenuShareAppMessage"></div>
+<div class="top">
+    <input type="hidden" ng-model="tid"/>
+    <div class="poto">
+        <img ng-src="{{project_user.avatar}}"/>
+    </div>
+    <div class="v3_line">
+        <img src="http://apistatic.yijian.tv/images/v3_line.png"/>
+    </div>
+    <div class="poto2">
+        <img ng-src="{{project_user.logo}}"/>
+    </div>
+    <div style="clear: both;"></div>
+    <p style="color: #fff; font-size: 1.4em; ">{{project_user.nickname}}</p>
+    <p style="color: #e9e9e9; font-size: 1em; ">{{project_user.company}} | {{project_user.position}}</p>
+
+    <div class="rem">
+        <p>个人经历</p><b></b>
+    </div>
+    <div style="padding: 1em; line-height:1.5em;">
+        {{project_user.resume}}
+    </div>
+    <div class="v3_index_foot">
+        <ul>
+            <li>
+                <button id="{{project_user.id}}" ng-click="voteing(project_user.id,project_user.total)" class="toupiao">投票</button>
+                <button style="display:none;" id="{{project_user.id}}s" ng-click="voteddd()" class="toupiaos">投票</button>
+            </li>
+            <li>
+                <span id="{{project_user.id}}t" style="font-size: 1.5em; color: #EAB37D;">{{project_user.total}}</span>
+            </li>
+        </ul>
+        <div style="clear: both;"></div>
+
+    </div>
+</div>
+<a class="link" href="http://m.yijian.tv/share/newvctoprank?vid=2">查看排名</a>
+<div onclick="closethis(this)" id="lye" style="position: fixed; display: none; width: 100%; height: 100%; background:rgba(0,0,0,0.5);top: 0; left: 0;">
+    <div style="background:#888;width: 20em; text-align: center; height: 9em; position: absolute; top: 50%; left: 50%; margin: -3em 0 0 -10em;">
+        <p style="line-height: 6em;">您已投票成功！</p>
+        <div style="border-top: 2px solid #222;background: #888;">
+            <a href="http://m.yijian.tv/share/newvctop" style="float: left;width: 9.9em; color: #222; display: block; line-height:3em;">返回主页面</a>
+            <a href="http://m.yijian.tv/share/newvctoprank" style="float: right;width: 9.9em; color: #222; display: block;line-height: 3em; border-left: 0.2em solid #222;">查看排名</a>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?7c7df1a66b4676c14801e0451caf5d0e";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+
+
+    var token = "898d2cbfc30875f93a664f307926d5c9";
+    function closethis(obj){
+        $(obj).hide();
+    }
+
+    function run($scope, $http) {
+        $http.get("/activity/getvoteinfo?vid=2&id=106").success(function(response){
+            $scope.project_user = response;
+        });
+
+        $scope.voteddd=function(){
+            alert("投票次数过多，每人每天限投3票！")
+        }
+        $scope.voteing = function(oid,obj){
+            $http.get("/project/vote?vid=2&oid=" + oid + '&token=' + token)
+                .success(function(response) {
+                        $scope.getid = response;
+                        if($scope.getid.status == oid){
+                            $("#"+oid).hide();
+                            $("#"+oid+"s").show();
+                            var mub =parseInt(obj) + 1;
+                            $("#"+oid+"t").html(mub);
+                            $('#lye').show();
+
+                        }
+                        if($scope.getid.status == 0){
+                            alert("请不要重复投票！");
+                        }
+                    }
+                );
+        };
+
+    }
+    wx.config({
+        debug: false,
+        appId: 'wxf389c927b80e95bf', // 必填，公众号的唯一标识
+        timestamp: 1464789142,  // 必填，生成签名的时间戳
+        nonceStr: 'qGaVyspxgZalhDiD',  // 必填，生成签名的随机串
+        signature: '58de3f3a5d470babb9dc3d30b8bac66c8a1ac7d1', // 必填，签名，见附录1
+        jsApiList: [
+            'checkJsApi',
+            'onMenuShareTimeline',
+            'onMenuShareAppMessage'
+        ]
+    });
+
+
+    wx.ready(function () {
+        var title = 'TOPS100中国新锐投资人排行榜';
+
+        var shareData = {
+            title: title,
+            desc: '2016 Tops Investor Rank聚拢投资行业最前沿的操盘手，一见邀你一起见证中国新锐投资明星的诞生。',
+            link: 'http://m.yijian.tv/share/newvctopinfo?id=106',
+            imgUrl: 'http://apistatic.yijian.tv/images/top100_share.jpg'
+        };
+        wx.onMenuShareAppMessage(shareData);
+        wx.onMenuShareTimeline(shareData);
+
+        function decryptCode(code, callback) {
+            $.getJSON('/jssdk/decrypt_code.php?code=' + encodeURI(code), function (res) {
+                if (res.errcode == 0) {
+                    codes.push(res.code);
+                }
+            });
+        }
+    });
+
+    wx.error(function (res) {
+        //        alert(res.errMsg);
+    });
+</script>
+</body>
+</html>
