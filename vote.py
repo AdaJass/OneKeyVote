@@ -3,7 +3,7 @@ import aiohttp
 import random
 
 n=0
-async def request(votes):
+async def request(votes, radius):
     global n
     # votes=1000
     headers={'User-Agent':'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.87 Safari/537.36'
@@ -12,7 +12,7 @@ async def request(votes):
     voteurl='http://m.yijian.tv/project/vote?vid=2&oid=106&token='
     # while True:        
     for i in range (votes):
-        sleeptime=int(5*random.random())+5
+        sleeptime=int(radius*random.random())
         await asyncio.sleep(sleeptime)
         print('sleep for ',sleeptime, 'seconds')
         with aiohttp.ClientSession() as session:            
@@ -37,7 +37,9 @@ if __name__=='__main__':
     loop = asyncio.get_event_loop()
     votes=input('你想投几票？:\n')
     votes=int(votes)
-    tasks =[request(votes)]     
+    radius=input('程序需要通过随机的睡眠时间模仿人类随机投票，请输入睡眠时间的大致时长，以秒为单位（建议在5~10秒之间）：\n')
+    radius=int(radius)    
+    tasks =[request(votes, radius)]     
     loop.run_until_complete(asyncio.wait(tasks))
     loop.close() 
 
