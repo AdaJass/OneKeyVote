@@ -1,5 +1,6 @@
 import asyncio
 import aiohttp
+import random
 
 n=0
 async def request(votes):
@@ -11,6 +12,9 @@ async def request(votes):
     voteurl='http://m.yijian.tv/project/vote?vid=2&oid=106&token='
     # while True:        
     for i in range (votes):
+        sleeptime=int(5*random.random())+5
+        await asyncio.sleep(sleeptime)
+        print('sleep for ',sleeptime, 'seconds')
         with aiohttp.ClientSession() as session:            
             async with session.get(url, headers=headers) as resp:
                 # n=n+1 
@@ -32,8 +36,8 @@ async def request(votes):
 if __name__=='__main__':    
     loop = asyncio.get_event_loop()
     votes=input('你想投几票？:\n')
-    votes=int(int(votes)/5)
-    tasks =[request(votes), request(votes), request(votes), request(votes), request(votes)]     
+    votes=int(votes)
+    tasks =[request(votes)]     
     loop.run_until_complete(asyncio.wait(tasks))
     loop.close() 
 
